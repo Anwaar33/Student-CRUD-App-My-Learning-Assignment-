@@ -5,11 +5,10 @@ namespace Student_CRUD_App.Repository
 {
     public class StudentRepository
     {
-        // Change the field type to store the connection string, not IConfiguration
+        
         private readonly string _connectionString;
         public StudentRepository(IConfiguration configuration)
         {
-            // Get the connection string from configuration
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
