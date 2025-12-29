@@ -83,10 +83,5 @@ namespace Student_CRUD_App.Repository
             con.Open();
             cmd.ExecuteNonQuery();
         }
-
-
-
-
-
     }
 }
