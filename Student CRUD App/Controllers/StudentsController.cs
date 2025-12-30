@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using Student_CRUD_App.Repository;
@@ -16,6 +17,7 @@ namespace Student_CRUD_App.Controllers
             _studentRepository = studentRepository;
         }
 
+        [Authorize]
         [HttpGet("Get All")]
         public IActionResult Get()
         {

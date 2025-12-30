@@ -1,5 +1,11 @@
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Student_CRUD_App.JWT_Token;
+using Student_CRUD_App.Middleware;
 using Student_CRUD_App.Repository;
+using System.Text;
+
 
 namespace Student_CRUD_App
 {
@@ -17,7 +23,30 @@ namespace Student_CRUD_App
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddScoped<StudentRepository>();
+            builder.Services.AddScoped<TokenService>();
 
+
+            //JWT Token Authentication
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+
+                        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                        ValidAudience = builder.Configuration["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                    };
+                });
 
             var app = builder.Build();
 
@@ -29,6 +58,10 @@ namespace Student_CRUD_App
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseAuthorization();
 
